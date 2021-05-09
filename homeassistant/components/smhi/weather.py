@@ -131,7 +131,7 @@ class SmhiWeather(WeatherEntity):
 
     async def retry_update(self, _: datetime) -> None:
         """Retry refresh weather forecast."""
-        await self.async_update()
+        await self.async_update(no_throttle=True)
 
     async def get_weather_forecast(self) -> list[SmhiForecast]:
         """Return the current forecasts from SMHI API."""
