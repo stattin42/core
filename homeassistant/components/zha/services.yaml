@@ -303,3 +303,32 @@ set_lock_user_code:
       example: 1234
       selector:
         text:
+
+set_zigbee_attr_report_config:
+  name: Set zigbee attribute reporting configuration
+  description: >-
+    Set attribute reporting configuration for the specified attribute on the specified device and channel.
+  fields:
+    ieee:
+      name: IEEE
+      description: IEEE address for the device
+      required: true
+      example: "00:0d:6f:00:05:7d:2d:34"
+      selector:
+        text:
+    channel:
+      name: Channel
+      description: >-
+        Name of the channel which the attribute is associated with.
+      required: true
+      example: "electrical_measurement"
+      selector:
+        text:
+    report_config:
+      name: Report config
+      description: >-
+        Dictionary with attribute and corresponding reporting configuration [minimum reporting interval, maximum reporting interval, reportable change].
+      required: true
+      example: "attribute: active_power\nconfig:\n    - 30\n    - 900\n    - 10"
+      selector:
+        text:
