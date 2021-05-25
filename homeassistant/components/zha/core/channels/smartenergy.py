@@ -92,8 +92,8 @@ class Metering(ZigbeeChannel):
 
     @property
     def divisor(self) -> int:
-        """Return divisor for the value."""
-        return self.cluster.get("divisor") or 1
+        """Return divisor for the value; INNR SP-120 does not provide divisor so default to 100 if not available."""
+        return self.cluster.get("divisor") or 100
 
     @property
     def multiplier(self) -> int:
@@ -148,12 +148,6 @@ class Metering(ZigbeeChannel):
     def formatter_function(self, value: int) -> int | float:
         """Return formatted value for display."""
         value = value * self.multiplier / self.divisor
-        if self.unit_of_measurement == POWER_WATT:
-            # Zigbee spec power unit is kW, but we show the value in W
-            value_watt = value * 1000
-            if value_watt < 100:
-                return round(value_watt, 1)
-            return round(value_watt)
         return self._format_spec.format(value).lstrip()
 
 
