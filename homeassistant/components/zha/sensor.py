@@ -196,6 +196,8 @@ class Sensor(ZhaEntity, SensorEntity):
     manufacturers="Digi",
     stop_on_match_group=CHANNEL_ANALOG_INPUT,
 )
+@STRICT_MATCH(channel_names=CHANNEL_ANALOG_INPUT, manufacturers="Digi")
+@STRICT_MATCH(channel_names=CHANNEL_ANALOG_INPUT, manufacturers="MiaSitt")
 class AnalogInput(Sensor):
     """Sensor that displays analog input values."""
 
