@@ -215,6 +215,7 @@ class Sensor(ZhaEntity, SensorEntity):
     models={"lumi.plug", "lumi.plug.maus01", "lumi.plug.mmeu01"},
 )
 @STRICT_MATCH(channel_names=CHANNEL_ANALOG_INPUT, manufacturers="Digi")
+@STRICT_MATCH(channel_names=CHANNEL_ANALOG_INPUT, manufacturers="MiaSitt")
 class AnalogInput(Sensor):
     """Sensor that displays analog input values."""
 
