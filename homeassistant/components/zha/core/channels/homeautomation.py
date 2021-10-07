@@ -46,7 +46,20 @@ class ElectricalMeasurementChannel(ZigbeeChannel):
 
     CHANNEL_NAME = CHANNEL_ELECTRICAL_MEASUREMENT
 
-    REPORT_CONFIG = ({"attr": "active_power", "config": REPORT_CONFIG_DEFAULT},)
+    REPORT_CONFIG = (
+        {
+            "attr": "active_power",
+            "config": (30, 900, 10),
+        },
+        {
+            "attr": "rms_current",
+            "config": (30,65535,1),
+        },
+        {
+            "attr": "rms_voltage",
+            "config": (30,65535,1),
+        }
+    )
     ZCL_INIT_ATTRS = {
         "ac_power_divisor": True,
         "power_divisor": True,
