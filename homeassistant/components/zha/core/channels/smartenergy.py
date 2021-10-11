@@ -56,9 +56,9 @@ class Metering(ZigbeeChannel):
     """Metering channel."""
 
     REPORT_CONFIG = (
-        {"attr": "instantaneous_demand", "config": REPORT_CONFIG_OP},
         {"attr": "current_summ_delivered", "config": REPORT_CONFIG_DEFAULT},
         {"attr": "status", "config": REPORT_CONFIG_ASAP},
+#        {"attr": "instantaneous_demand", "config": REPORT_CONFIG_OP},
     )
     ZCL_INIT_ATTRS = {
         "demand_formatting": True,
