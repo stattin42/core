@@ -14,6 +14,8 @@ from ..const import (
 )
 from . import AttrReportConfig, ClusterHandler
 
+REPORT_CONFIG_OFF = (30, 65535, 1)
+
 
 @registries.ZIGBEE_CLUSTER_HANDLER_REGISTRY.register(
     homeautomation.ApplianceEventAlerts.cluster_id
@@ -65,15 +67,15 @@ class ElectricalMeasurementClusterHandler(ClusterHandler):
         POWER_QUALITY_MEASUREMENT = 256
 
     REPORT_CONFIG = (
-        AttrReportConfig(attr="active_power", config=REPORT_CONFIG_OP),
-        AttrReportConfig(attr="active_power_max", config=REPORT_CONFIG_DEFAULT),
-        AttrReportConfig(attr="apparent_power", config=REPORT_CONFIG_OP),
-        AttrReportConfig(attr="rms_current", config=REPORT_CONFIG_OP),
-        AttrReportConfig(attr="rms_current_max", config=REPORT_CONFIG_DEFAULT),
-        AttrReportConfig(attr="rms_voltage", config=REPORT_CONFIG_OP),
-        AttrReportConfig(attr="rms_voltage_max", config=REPORT_CONFIG_DEFAULT),
-        AttrReportConfig(attr="ac_frequency", config=REPORT_CONFIG_OP),
-        AttrReportConfig(attr="ac_frequency_max", config=REPORT_CONFIG_DEFAULT),
+        AttrReportConfig(attr="active_power", config=(30, 900, 10)),
+        AttrReportConfig(attr="active_power_max", config=REPORT_CONFIG_OFF),
+        AttrReportConfig(attr="apparent_power", config=REPORT_CONFIG_OFF),
+        AttrReportConfig(attr="rms_current", config=REPORT_CONFIG_OFF),
+        AttrReportConfig(attr="rms_current_max", config=REPORT_CONFIG_OFF),
+        AttrReportConfig(attr="rms_voltage", config=REPORT_CONFIG_OFF),
+        AttrReportConfig(attr="rms_voltage_max", config=REPORT_CONFIG_OFF),
+        AttrReportConfig(attr="ac_frequency", config=REPORT_CONFIG_OFF),
+        AttrReportConfig(attr="ac_frequency_max", config=REPORT_CONFIG_OFF),
     )
     ZCL_INIT_ATTRS = {
         "ac_current_divisor": True,
