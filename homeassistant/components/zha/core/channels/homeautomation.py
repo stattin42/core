@@ -12,6 +12,9 @@ from ..const import (
     REPORT_CONFIG_OP,
     SIGNAL_ATTR_UPDATED,
 )
+
+REPORT_CONFIG_OFF = (30, 65535, 1)
+
 from .base import ZigbeeChannel
 
 
@@ -63,13 +66,13 @@ class ElectricalMeasurementChannel(ZigbeeChannel):
         POWER_QUALITY_MEASUREMENT = 256
 
     REPORT_CONFIG = (
-        {"attr": "active_power", "config": REPORT_CONFIG_OP},
-        {"attr": "active_power_max", "config": REPORT_CONFIG_DEFAULT},
-        {"attr": "apparent_power", "config": REPORT_CONFIG_OP},
-        {"attr": "rms_current", "config": REPORT_CONFIG_OP},
-        {"attr": "rms_current_max", "config": REPORT_CONFIG_DEFAULT},
-        {"attr": "rms_voltage", "config": REPORT_CONFIG_OP},
-        {"attr": "rms_voltage_max", "config": REPORT_CONFIG_DEFAULT},
+        {"attr": "active_power", "config": (30, 900, 10)},
+        {"attr": "active_power_max", "config": REPORT_CONFIG_OFF},
+        {"attr": "apparent_power", "config": REPORT_CONFIG_OFF},
+        {"attr": "rms_current", "config": REPORT_CONFIG_OFF},
+        {"attr": "rms_current_max", "config": REPORT_CONFIG_OFF},
+        {"attr": "rms_voltage", "config": REPORT_CONFIG_OFF},
+        {"attr": "rms_voltage_max", "config": REPORT_CONFIG_OFF},
     )
     ZCL_INIT_ATTRS = {
         "ac_current_divisor": True,
