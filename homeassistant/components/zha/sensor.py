@@ -256,7 +256,7 @@ class ElectricalMeasurement(Sensor):
 
     SENSOR_ATTR = "active_power"
     _attr_device_class: SensorDeviceClass = SensorDeviceClass.POWER
-    _attr_should_poll = True  # BaseZhaEntity defaults to False
+    _attr_should_poll = False  # Don't poll. Rely on device reporting. (BaseZhaEntity defaults to False)
     _attr_state_class: SensorStateClass = SensorStateClass.MEASUREMENT
     _attr_name: str = "Active power"
     _attr_native_unit_of_measurement: str = UnitOfPower.WATT
@@ -499,7 +499,7 @@ class SmartEnergySummation(SmartEnergyMetering, id_suffix="summation_delivered")
 class PolledSmartEnergySummation(SmartEnergySummation):
     """Polled Smart Energy Metering summation sensor."""
 
-    _attr_should_poll = True  # BaseZhaEntity defaults to False
+    _attr_should_poll = False  # Don't poll. Rely on device reporting. (BaseZhaEntity defaults to False)
 
     async def async_update(self) -> None:
         """Retrieve latest state."""
