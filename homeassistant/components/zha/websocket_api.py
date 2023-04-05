@@ -104,6 +104,13 @@ ATTR_SOURCE_IEEE = "source_ieee"
 ATTR_TARGET_IEEE = "target_ieee"
 ATTR_QR_CODE = "qr_code"
 
+ATTR_CHANNEL = "channel"
+ATTR_REPORT_CONFIG = "report_config"
+ATTR_CONFIG = "config"
+ATTR_REPORT_CONFIG_MIN_INT = "report_config_min_int"
+ATTR_REPORT_CONFIG_MAX_INT = "report_config_max_int"
+ATTR_REPORT_CONFIG_RPT_CHANGE = "report_config_rpt_change"
+
 SERVICE_PERMIT = "permit"
 SERVICE_REMOVE = "remove"
 SERVICE_SET_ZIGBEE_CLUSTER_ATTRIBUTE = "set_zigbee_cluster_attribute"
@@ -115,6 +122,7 @@ SERVICE_WARNING_DEVICE_SQUAWK = "warning_device_squawk"
 SERVICE_WARNING_DEVICE_WARN = "warning_device_warn"
 SERVICE_ZIGBEE_BIND = "service_zigbee_bind"
 IEEE_SERVICE = "ieee_based_service"
+SERVICE_SET_ZIGBEE_ATTR_REPORT_CONFIG = "set_zigbee_attr_report_config"
 
 IEEE_SCHEMA = vol.All(cv.string, EUI64.convert)
 
@@ -231,6 +239,13 @@ SERVICE_SCHEMAS = {
             vol.Optional(ATTR_MANUFACTURER): vol.All(
                 vol.Coerce(int), vol.Range(min=-1)
             ),
+        }
+    ),
+    SERVICE_SET_ZIGBEE_ATTR_REPORT_CONFIG: vol.Schema(
+        {
+            vol.Required(ATTR_IEEE): EUI64.convert,
+            vol.Required(ATTR_CHANNEL): cv.string,
+            vol.Required(ATTR_REPORT_CONFIG): dict,
         }
     ),
 }
@@ -1534,6 +1549,74 @@ def async_load_api(hass: HomeAssistant) -> None:
         SERVICE_WARNING_DEVICE_WARN,
         warning_device_warn,
         schema=SERVICE_SCHEMAS[SERVICE_WARNING_DEVICE_WARN],
+    )
+
+    async def set_zigbee_attr_report_config(service):
+        """Set zigbee attribute reporting configuration on zha device."""
+
+        def _get_channel(zha_device, channel_name):
+            """Get the specified channel for a device."""
+            cluster_channels = {
+                ch.name: ch
+                for pool in zha_device.channels.pools
+                for ch in pool.claimed_channels.values()
+            }
+            _LOGGER.debug("Channels: %s", cluster_channels)
+            return cluster_channels.get(channel_name)
+
+        ieee = service.data.get(ATTR_IEEE)
+        channel_name = service.data.get(ATTR_CHANNEL)
+        report_config = service.data.get(ATTR_REPORT_CONFIG)
+        attribute = report_config[ATTR_ATTRIBUTE]
+        _LOGGER.debug("REPORT CONFIG1: %s :: %s :: %s.", report_config, attribute, report_config[ATTR_CONFIG])
+        report_config_min_int, report_config_max_int, report_config_rpt_change = report_config[ATTR_CONFIG]
+        zha_device = zha_gateway.get_device(ieee)
+
+        _LOGGER.debug("REPORT CONFIG2: %s :: %s (%s, %s, %s).",
+                          report_config,
+                          attribute,
+                          report_config_min_int,
+                          report_config_max_int,
+                          report_config_rpt_change)
+
+        response = None
+        if zha_device is not None:
+            channel = _get_channel(zha_device, channel_name)
+            if channel is not None:
+                response = await channel.cluster.configure_reporting(
+                    attribute,
+                    report_config_min_int,
+                    report_config_max_int,
+                    report_config_rpt_change,
+                )
+            else:
+                _LOGGER.debug("Channel %s: [%s] %s: [%s] not found.", ATTR_IEEE, ieee, ATTR_CHANNEL, channel_name)
+        else:
+            _LOGGER.debug("Device %s: [%s] not found.", ATTR_IEEE, ieee)
+
+        _LOGGER.debug(
+            "Set reporting configuration for: %s: [%s] %s: [%s] %s: [%s] %s: [%s] %s: [%s] %s: [%s] %s: [%s]",
+            ATTR_IEEE,
+            ieee,
+            ATTR_CHANNEL,
+            channel_name,
+            ATTR_ATTRIBUTE,
+            attribute,
+            ATTR_REPORT_CONFIG_MIN_INT,
+            report_config_min_int,
+            ATTR_REPORT_CONFIG_MAX_INT,
+            report_config_max_int,
+            ATTR_REPORT_CONFIG_RPT_CHANGE,
+            report_config_rpt_change,
+            RESPONSE,
+            response,
+        )
+
+    hass.helpers.service.async_register_admin_service(
+        DOMAIN,
+        SERVICE_SET_ZIGBEE_ATTR_REPORT_CONFIG,
+        set_zigbee_attr_report_config,
+        schema=SERVICE_SCHEMAS[SERVICE_SET_ZIGBEE_ATTR_REPORT_CONFIG],
     )
 
     websocket_api.async_register_command(hass, websocket_permit_devices)
