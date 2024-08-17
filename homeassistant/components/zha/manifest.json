@@ -21,7 +21,7 @@
     "zha",
     "universal_silabs_flasher"
   ],
-  "requirements": ["zha==0.0.47"],
+  "requirements": ["zha @ git+https://github.com/stattin42/zha.git@0.0.47+local"],
   "usb": [
     {
       "vid": "10C4",
